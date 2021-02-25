@@ -1,5 +1,8 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# DB Credentials
+/config/db.js
+
 # compiled output
 /dist
 /tmp
