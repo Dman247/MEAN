@@ -32,8 +32,6 @@ export const mimeType = (control: AbstractControl): Promise<{ [key: string]: any
             break;
         }
         if (isValid) {
-          console.log(isValid);
-          console.log(header);
           observer.next(null);
         } else {
           observer.next({ invalidMimeType: true });
