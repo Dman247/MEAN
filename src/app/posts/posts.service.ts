@@ -16,7 +16,7 @@ export class PostsService {
 
   getPosts(postsPerPage: number, currentPage: number) {
     const queryParams = `?pagesize=${postsPerPage}&page=${currentPage}`;
-    this.http.get<{ message: string, posts: any, maxPosts: number }>('http://localhost:3030/api/posts' + queryParams)
+    this.http.get<{ message: string, posts: any[], maxPosts: number }>('http://localhost:3030/api/posts' + queryParams)
       .pipe(
         map((postData) => {
           return {
@@ -69,7 +69,7 @@ export class PostsService {
       postData = { id: id, title: title, content: content, imagePath: image };
     }
     this.http.put("http://localhost:3030/api/posts/" + id, postData)
-      .subscribe((response: { message: string, imagePath: string }) => {
+      .subscribe(response => {
         this.router.navigate(["/"]);
       });
   }
