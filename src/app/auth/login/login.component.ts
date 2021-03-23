@@ -1,5 +1,5 @@
-import { Component } from "@angular/core";
-import { NgForm } from "@angular/forms";
+import { Component } from '@angular/core';
+import { NgForm } from '@angular/forms';
 
 @Component({
   templateUrl: './login.component.html',
@@ -8,7 +8,7 @@ import { NgForm } from "@angular/forms";
 export class LoginComponent {
   isLoading = false;
 
-  onLogin(form: NgForm) {
+  onLogin(form: NgForm): void {
     console.log(form.value);
   }
 }
