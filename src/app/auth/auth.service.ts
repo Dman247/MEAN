@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { AuthData } from './auth-data.model';
 
@@ -23,7 +23,7 @@ export class AuthService {
     return this.isAuthenticated;
   }
 
-  getAuthStatusListener() {
+  getAuthStatusListener(): Observable<boolean> {
     return this.authStatusListener.asObservable();
   }
 
@@ -50,7 +50,7 @@ export class AuthService {
       });
   }
 
-  logout() {
+  logout(): void {
     this.token = null;
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
