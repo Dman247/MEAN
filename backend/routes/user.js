@@ -47,6 +47,11 @@ router.post('/login', (req, res, next) => {
       return bcrypt.compare(req.body.password, user.password);
     })
     .then(bcryptPromise => {
+      if (!bcryptPromise) {
+        return res.status(401).json({
+          message: 'Auth failed!'
+        });
+      }
       const token = jwt.sign({ email: fetchedUser.email, userId: fetchedUser._id }, 'secret_key_to_encrypt_JWT', { expiresIn: '1h' });
       res.status(200).json({
         token
