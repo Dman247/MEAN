@@ -45,14 +45,29 @@ export class AuthService {
         this.token = token;
         if (token) {
           const expiresInDuration = response.expiresIn;
-          this.tokenTimer = setTimeout(() => {
-            this.logout();
-          }, expiresInDuration * 1000);
+          this.setAuthTimer(expiresInDuration);
           this.isAuthenticated = true;
           this.authStatusListener.next(true);
+          const now = new Date();
+          const expirationDate = new Date(now.getTime() + expiresInDuration * 1000);
+          this.saveAuthData(token, expirationDate);
           this.router.navigate(['/']);
         }
       });
+  }
+
+  autoAuthUser(): void {
+    const localAuthInformation = this.getLocalAuthData();
+    if (localAuthInformation) {
+      const now = new Date();
+      const expiresIn = localAuthInformation.expirationDate.getTime() - now.getTime();
+      if (expiresIn > 0) {
+        this.token = localAuthInformation.token;
+        this.isAuthenticated = true;
+        this.setAuthTimer(expiresIn / 1000);
+        this.authStatusListener.next(true);
+      }
+    }
   }
 
   logout(): void {
@@ -60,7 +75,37 @@ export class AuthService {
     this.isAuthenticated = false;
     this.authStatusListener.next(false);
     clearTimeout(this.tokenTimer);
+    this.clearAuthData();
     this.router.navigate(['/']);
+  }
+
+  private setAuthTimer(duration: number): void {
+    console.log('Setting timer: ' + duration);
+    this.tokenTimer = setTimeout(() => {
+      this.logout();
+    }, duration * 1000);
+  }
+
+  private saveAuthData(token: string, expirationDate: Date): void {
+    localStorage.setItem('token', token);
+    localStorage.setItem('expiration', expirationDate.toISOString());
+  }
+
+  private clearAuthData(): void {
+    localStorage.removeItem('token');
+    localStorage.removeItem('expiration');
+  }
+
+  private getLocalAuthData(): { token: string, expirationDate: Date } | void {
+    const token = localStorage.getItem('token');
+    const expirationDate = localStorage.getItem('expiration');
+    if (!token || !expirationDate) {
+      return;
+    }
+    return {
+      token,
+      expirationDate: new Date(expirationDate),
+    };
   }
 
 }
