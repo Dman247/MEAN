@@ -9,12 +9,15 @@ const userRoutes = require('./routes/user');
 
 const app = express();
 
-mongoose.connect("mongodb+srv://dylan:" + dbConfig.password + "@mean-course.o3p4v.mongodb.net/node-angular?retryWrites=true&w=majority")
+mongoose
+  .connect("mongodb+srv://dylan:" + dbConfig.password + "@mean-course.o3p4v.mongodb.net/node-angular?retryWrites=true&w=majority",
+    { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
   .then(() => {
     console.log('Connected to database!');
   })
-  .catch(() => {
+  .catch((err) => {
     console.log('Connection Failed!');
+    console.log(err);
   });
 
 app.use(bodyParser.json());
