@@ -43,8 +43,8 @@ export class PostsService {
     return this.postsUpdated.asObservable();
   }
 
-  getPost(id: string): Observable<{ _id: string, title: string, content: string, imagePath: string }> {
-    return this.http.get<{ _id: string, title: string, content: string, imagePath: string }>('http://localhost:3030/api/posts/' + id);
+  getPost(id: string): Observable<{ _id: string, title: string, content: string, imagePath: string, creator: string }> {
+    return this.http.get<{ _id: string, title: string, content: string, imagePath: string, creator: string }>('http://localhost:3030/api/posts/' + id);
   }
 
   addPost(title: string, content: string, image: File): void {
@@ -67,7 +67,7 @@ export class PostsService {
       postData.append('content', content);
       postData.append('image', image, title);
     } else {
-      postData = { id, title, content, imagePath: image };
+      postData = { id, title, content, imagePath: image, creator: null };
     }
     this.http.put('http://localhost:3030/api/posts/' + id, postData)
       .subscribe(response => {
