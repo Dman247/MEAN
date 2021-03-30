@@ -19,7 +19,7 @@ const storage = multer.diskStorage({
     if (isValid) {
       error = null;
     }
-    cb(error, "backend/images");
+    cb(error, 'backend/images');
   },
   filename: (req, file, cb) => {
     const name = file.originalname.toLowerCase().split(' ').join('-');
@@ -28,12 +28,12 @@ const storage = multer.diskStorage({
   }
 });
 
-router.post('', checkAuth, multer({ storage: storage }).single("image"), (req, res, next) => {
-  const url = req.protocol + '://' + req.get("host");
+router.post('', checkAuth, multer({ storage: storage }).single('image'), (req, res, next) => {
+  const url = req.protocol + '://' + req.get('host');
   const post = new Post({
     title: req.body.title,
     content: req.body.content,
-    imagePath: url + "/images/" + req.file.filename,
+    imagePath: url + '/images/' + req.file.filename,
     creator: req.userData.userId,
   });
   post.save().then(createdPost => {
@@ -47,11 +47,11 @@ router.post('', checkAuth, multer({ storage: storage }).single("image"), (req, r
   });
 });
 
-router.put('/:id', multer({ storage: storage }).single("image"), (req, res, nex) => {
+router.put('/:id', checkAuth, multer({ storage: storage }).single('image'), (req, res, nex) => {
   let imagePath = req.body.imagePath;
   if (req.file) {
-    const url = req.protocol + "://" + req.get("host");
-    imagePath = url + "/images/" + req.file.filename;
+    const url = req.protocol + '://' + req.get('host');
+    imagePath = url + '/images/' + req.file.filename;
   }
   const post = new Post({
     _id: req.body.id,
@@ -59,9 +59,13 @@ router.put('/:id', multer({ storage: storage }).single("image"), (req, res, nex)
     content: req.body.connect,
     imagePath: imagePath,
   });
-  Post.updateOne({ _id: req.params.id }, post)
+  Post.updateOne({ _id: req.params.id, creator: req.userData.userId }, post)
     .then((result) => {
-      res.status(200).json({ message: 'Update successful!', imagePath: imagePath });
+      if (result.n > 0) {
+        res.status(200).json({ message: 'Update successful!', imagePath: imagePath });
+      } else {
+        res.status(401).json({ message: 'Not authorized!' });
+      }
     });
 });
 
@@ -99,11 +103,15 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-router.delete("/:id", checkAuth, (req, res, next) => {
-  Post.deleteOne({ _id: req.params.id })
+router.delete('/:id', checkAuth, (req, res, next) => {
+  Post
+    .deleteOne({ _id: req.params.id, creator: req.userData.userId })
     .then((result) => {
-      console.log(result);
-      res.status(200).json({ message: "Post deleted!" });
+      if (result.n > 0) {
+        res.status(200).json({ message: 'Deletion Successful!' });
+      } else {
+        res.status(401).json({ message: 'Not authorized!' });
+      }
     });
 });
 
