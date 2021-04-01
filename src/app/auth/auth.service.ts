@@ -35,10 +35,11 @@ export class AuthService {
 
   createUser(email: string, password: string): void {
     const authData: AuthData = { email, password };
-
     this.http.post('http://localhost:3030/api/user/signup', authData)
       .subscribe(response => {
         this.router.navigate(['/', 'login']);
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
@@ -59,6 +60,8 @@ export class AuthService {
           this.saveAuthData(token, expirationDate, this.userId);
           this.router.navigate(['/']);
         }
+      }, error => {
+        this.authStatusListener.next(false);
       });
   }
 
