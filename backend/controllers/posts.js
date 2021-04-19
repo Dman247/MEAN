@@ -33,7 +33,7 @@ exports.updatePost = (req, res, nex) => {
   const post = new Post({
     _id: req.body.id,
     title: req.body.title,
-    content: req.body.connect,
+    content: req.body.content,
     imagePath: imagePath,
     creator: req.userData.userId,
   });
