@@ -16,10 +16,17 @@ exports.createUser = (req, res, next) => {
             message: 'User: created!',
             result: result
           });
-        }).catch(err => {
-          res.status(500).json({
-            message: "Invalid authentication credentials!"
-          });
+        })
+        .catch(err => {
+          if (err.errors.email.kind == 'unique') {
+            res.status(403).json({
+              message: "Email already exists!"
+            });
+          } else {
+            res.status(500).json({
+              message: "Invalid authentication credentials!"
+            });
+          }
         });
     })
     .catch(err => {
