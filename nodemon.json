@@ -1,0 +1,5 @@
+{
+  "env": {
+    "JWT_KEY": "secret_key_to_encrypt_JWT"
+  }
+}
