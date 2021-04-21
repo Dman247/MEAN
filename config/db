@@ -1,6 +1,0 @@
-//Rename file with a .js extension and add MongoDB credentials
-
-module.exports = {
-  username: "<<USERNAME>>",
-  password: "<<PASSWORD>>"
-}
