@@ -78,6 +78,7 @@ exports.getPosts = (req, res, next) => {
       res.status(500).json({
         message: 'Fetching posts failed!'
       })
+      console.log(error)
     });
 }
 
